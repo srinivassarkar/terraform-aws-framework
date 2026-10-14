@@ -38,9 +38,9 @@ flowchart TD
         end
     end
 
-    Client -->|HTTPS / Port 443| ALB
-    ALB -->|HTTP / Port 80 (SG Ref)| App1
-    ALB -->|HTTP / Port 80 (SG Ref)| App2
+    Client -->|HTTPS 443| ALB
+    ALB -->|HTTP 80| App1
+    ALB -->|HTTP 80| App2
     IGW --> PublicSubnets
     App1 -->|Egress via NAT| NAT
     App2 -->|Egress via NAT| NAT
