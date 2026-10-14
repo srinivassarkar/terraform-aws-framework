@@ -1,6 +1,6 @@
-﻿# ≡ƒÜÇ TERRAFORM COMPLETE REVISION GUIDE (2025)
+# TERRAFORM COMPLETE REVISION GUIDE (2025)
 
-## ≡ƒôæ TABLE OF CONTENTS
+## TABLE OF CONTENTS
 1. [Terraform Basics](#1-terraform-basics)
 2. [Installation & Setup](#2-installation--setup)
 3. [Core Commands](#3-core-commands)
@@ -34,11 +34,11 @@
 
 ### Key Advantages
 ```
-Γ£à Reusable code
-Γ£à Time-saving automation
-Γ£à Eliminates manual errors
-Γ£à Dry run capability (plan)
-Γ£à Version control infrastructure
+[OK] Reusable code
+[OK] Time-saving automation
+[OK] Eliminates manual errors
+[OK] Dry run capability (plan)
+[OK] Version control infrastructure
 ```
 
 ### Terraform vs Competitors
@@ -51,7 +51,7 @@
 
 ### Core Workflow
 ```
-Code (HCL) ΓåÆ Plan ΓåÆ Apply ΓåÆ Infrastructure Created
+Code (HCL) → Plan → Apply → Infrastructure Created
 ```
 
 ---
@@ -131,13 +131,13 @@ terraform init -migrate-state # Migrate to new backend
 ### File Structure
 ```
 terraform/
-Γö£ΓöÇΓöÇ main.tf # Main configuration
-Γö£ΓöÇΓöÇ variable.tf # Variable declarations
-Γö£ΓöÇΓöÇ outputs.tf # Output definitions
-Γö£ΓöÇΓöÇ dev.tfvar # Dev environment values
-Γö£ΓöÇΓöÇ test.tfvar # Test environment values
-Γö£ΓöÇΓöÇ prod.tfvar # Prod environment values
-ΓööΓöÇΓöÇ terraform.tfstate # State file (auto-generated)
+├── main.tf # Main configuration
+├── variable.tf # Variable declarations
+├── outputs.tf # Output definitions
+├── dev.tfvar # Dev environment values
+├── test.tfvar # Test environment values
+├── prod.tfvar # Prod environment values
+└── terraform.tfstate # State file (auto-generated)
 ```
 
 ### Basic Resource Syntax
@@ -264,8 +264,8 @@ Create isolated environments (dev, test, prod) with same configuration
 
 ### Why Use Workspaces?
 ```
-Γ¥î Problem: Single workspace overrides previous deployment
-Γ£à Solution: Multiple workspaces run in parallel
+[X] Problem: Single workspace overrides previous deployment
+[OK] Solution: Multiple workspaces run in parallel
 ```
 
 ### Workspace Commands
@@ -337,9 +337,9 @@ resource "aws_instance" "web" {
 
 # With workspaces
 ./terraform.tfstate.d/
- Γö£ΓöÇΓöÇ dev/terraform.tfstate
- Γö£ΓöÇΓöÇ test/terraform.tfstate
- ΓööΓöÇΓöÇ prod/terraform.tfstate
+ ├── dev/terraform.tfstate
+ ├── test/terraform.tfstate
+ └── prod/terraform.tfstate
 ```
 
 ### State Commands
@@ -489,16 +489,16 @@ Store state file remotely for team collaboration and safety
 
 ### Why Remote Backend?
 ```
-Γ£à Team collaboration
-Γ£à State file backup
-Γ£à Version history
-Γ£à Locking (prevent conflicts)
-Γ£à Encryption
+[OK] Team collaboration
+[OK] State file backup
+[OK] Version history
+[OK] Locking (prevent conflicts)
+[OK] Encryption
 ```
 
 ### Modern S3 Backend Configuration (2025)
 
-**ΓÜí NEW: Native State Locking with use_lockfile**
+**NEW: Native State Locking with use_lockfile**
 
 ```hcl
 terraform {
@@ -507,7 +507,7 @@ terraform {
  key = "prod/terraform.tfstate"
  region = "us-east-1"
  encrypt = true
- use_lockfile = true # Γ¡É NEW: Native S3 locking (no DynamoDB needed!)
+ use_lockfile = true # NEW: Native S3 locking (no DynamoDB needed!)
  }
 }
 ```
@@ -528,16 +528,16 @@ terraform {
 
 ### Benefits of Native Locking
 ```
-Γ£à No extra infrastructure (no DynamoDB)
-Γ£à Simplified configuration (one parameter)
-Γ£à Lower costs
-Γ£à Atomic operations built-in
-Γ£à Automatic cleanup of lock files
+[OK] No extra infrastructure (no DynamoDB)
+[OK] Simplified configuration (one parameter)
+[OK] Lower costs
+[OK] Atomic operations built-in
+[OK] Automatic cleanup of lock files
 ```
 
 ### Legacy S3 Backend (with DynamoDB)
 ```hcl
-# ΓÜá∩╕Å DEPRECATED: Only use if on Terraform < 1.10
+# DEPRECATED: Only use if on Terraform < 1.10
 terraform {
  backend "s3" {
  bucket = "my-terraform-state-bucket"
@@ -586,7 +586,7 @@ aws dynamodb delete-table --table-name terraform-locks
 
 ## 11. TAINT & REPLACE
 
-### ΓÜá∩╕Å IMPORTANT: terraform taint is DEPRECATED (2025)
+### IMPORTANT: terraform taint is DEPRECATED (2025)
 
 **Status:** Deprecated since Terraform 0.15.2
 **Recommendation:** Use `-replace` flag instead
@@ -605,9 +605,9 @@ Mark specific resources for recreation (destroy + recreate)
 2. **Planning:** `terraform plan` schedules tainted resource for replacement
 3. **Applying:** `terraform apply` destroys and recreates the resource
 
-**ΓÜá∩╕Å Important:** The taint command itself does NOT immediately touch infrastructure - it only modifies the state file.
+**Important:** The taint command itself does NOT immediately touch infrastructure - it only modifies the state file.
 
-### Modern Method: -replace Flag (RECOMMENDED Γ£à)
+### Modern Method: -replace Flag (RECOMMENDED)
 
 ```bash
 # Replace resource in single command
@@ -622,14 +622,14 @@ terraform apply -replace="aws_instance.web" -replace="aws_instance.app"
 
 **Why use -replace?**
 ```
-Γ£à Single-step operation (no state modification)
-Γ£à Explicit and immediate
-Γ£à No "ticking time bombs" in state
-Γ£à Safer for team environments
-Γ£à Modern best practice
+[OK] Single-step operation (no state modification)
+[OK] Explicit and immediate
+[OK] No "ticking time bombs" in state
+[OK] Safer for team environments
+[OK] Modern best practice
 ```
 
-### Legacy Method: terraform taint (DEPRECATED ΓÜá∩╕Å)
+### Legacy Method: terraform taint (DEPRECATED)
 
 ```bash
 # List resources
@@ -653,18 +653,18 @@ terraform untaint aws_instance.web
 | Feature | terraform taint (OLD) | -replace flag (NEW) |
 |---------|----------------------|---------------------|
 | **Status** | Deprecated | Recommended |
-| **Steps** | 2-step (taint ΓåÆ apply) | 1-step |
+| **Steps** | 2-step (taint → apply) | 1-step |
 | **State modification** | Yes (permanent mark) | No (temporary) |
 | **Team safety** | Risk of accidental replacement | Explicit intent |
 | **Terraform version** | < 1.5 | 1.5+ |
 
 ### Example Scenario
 ```bash
-# Γ¥î OLD WAY (Deprecated)
+# OLD WAY (Deprecated)
 terraform taint aws_instance.web
 terraform apply
 
-# Γ£à NEW WAY (Recommended)
+# NEW WAY (Recommended)
 terraform apply -replace="aws_instance.web"
 
 # Result: EC2 instance is destroyed and recreated
@@ -1218,17 +1218,17 @@ terraform graph # Generate dependency graph
 ### File Organization
 ```
 terraform/
-Γö£ΓöÇΓöÇ main.tf # Main resources
-Γö£ΓöÇΓöÇ variables.tf # Variable declarations
-Γö£ΓöÇΓöÇ outputs.tf # Outputs
-Γö£ΓöÇΓöÇ locals.tf # Local values
-Γö£ΓöÇΓöÇ providers.tf # Provider configurations
-Γö£ΓöÇΓöÇ backend.tf # Backend configuration
-Γö£ΓöÇΓöÇ versions.tf # Version constraints
-Γö£ΓöÇΓöÇ dev.tfvars # Dev variables
-Γö£ΓöÇΓöÇ test.tfvars # Test variables
-Γö£ΓöÇΓöÇ prod.tfvars # Prod variables
-ΓööΓöÇΓöÇ README.md # Documentation
+├── main.tf # Main resources
+├── variables.tf # Variable declarations
+├── outputs.tf # Outputs
+├── locals.tf # Local values
+├── providers.tf # Provider configurations
+├── backend.tf # Backend configuration
+├── versions.tf # Version constraints
+├── dev.tfvars # Dev variables
+├── test.tfvars # Test variables
+├── prod.tfvars # Prod variables
+└── README.md # Documentation
 ```
 
 ### Naming Conventions
@@ -1269,15 +1269,15 @@ git commit -m "Add production VPC configuration"
 
 ### Security Best Practices
 ```
-Γ£à Never commit .tfstate files to git
-Γ£à Never commit .tfvars with secrets
-Γ£à Use remote backend (S3) for state
-Γ£à Enable state file encryption
-Γ£à Use secrets manager for credentials
-Γ£à Implement state locking (use_lockfile = true)
-Γ£à Use IAM roles, not hardcoded keys
-Γ£à Enable S3 versioning for state files
-Γ£à Use .gitignore for sensitive files
+[OK] Never commit .tfstate files to git
+[OK] Never commit .tfvars with secrets
+[OK] Use remote backend (S3) for state
+[OK] Enable state file encryption
+[OK] Use secrets manager for credentials
+[OK] Implement state locking (use_lockfile = true)
+[OK] Use IAM roles, not hardcoded keys
+[OK] Enable S3 versioning for state files
+[OK] Use .gitignore for sensitive files
 ```
 
 ### .gitignore for Terraform
@@ -1311,34 +1311,34 @@ terraform.rc
 
 ### State Management Best Practices
 ```
-Γ£à Always use remote backend for teams
-Γ£à Enable S3 versioning for rollback
-Γ£à Regular state backups
-Γ£à Use state locking (native S3 or DynamoDB)
-Γ£à Never edit state file manually
-Γ£à Use terraform state commands only
-Γ£à Separate state per environment
-Γ£à Document state file location
+[OK] Always use remote backend for teams
+[OK] Enable S3 versioning for rollback
+[OK] Regular state backups
+[OK] Use state locking (native S3 or DynamoDB)
+[OK] Never edit state file manually
+[OK] Use terraform state commands only
+[OK] Separate state per environment
+[OK] Document state file location
 ```
 
 ### Workspace Strategy
 ```
-Development ΓåÆ terraform workspace new dev
-Testing ΓåÆ terraform workspace new test
-Staging ΓåÆ terraform workspace new staging
-Production ΓåÆ terraform workspace new prod
+Development → terraform workspace new dev
+Testing → terraform workspace new test
+Staging → terraform workspace new staging
+Production → terraform workspace new prod
 
 # Or use separate directories for environments:
 terraform/
-Γö£ΓöÇΓöÇ environments/
-Γöé Γö£ΓöÇΓöÇ dev/
-Γöé Γö£ΓöÇΓöÇ test/
-Γöé ΓööΓöÇΓöÇ prod/
+├── environments/
+│ ├── dev/
+│ ├── test/
+│ └── prod/
 ```
 
 ### Version Pinning
 ```hcl
-# Γ£à DO: Pin versions for stability
+# DO: Pin versions for stability
 terraform {
  required_version = "~> 1.6"
 
@@ -1350,13 +1350,13 @@ terraform {
  }
 }
 
-# Γ¥î DON'T: Use unpinned versions
+# DON'T: Use unpinned versions
 # This can cause unexpected behavior
 ```
 
 ### Resource Naming
 ```hcl
-# Γ£à DO: Use consistent naming
+# DO: Use consistent naming
 resource "aws_instance" "web" {
  tags = {
  Name = "${var.environment}-web-server"
@@ -1365,7 +1365,7 @@ resource "aws_instance" "web" {
  }
 }
 
-# Γ¥î DON'T: Use random names
+# DON'T: Use random names
 resource "aws_instance" "server1" {
  tags = {
  Name = "prod server"
@@ -1375,7 +1375,7 @@ resource "aws_instance" "server1" {
 
 ### DRY Principle (Don't Repeat Yourself)
 ```hcl
-# Γ£à DO: Use locals for repeated values
+# DO: Use locals for repeated values
 locals {
  common_tags = {
  Environment = var.environment
@@ -1427,7 +1427,7 @@ resource "aws_instance" "web" {
 
 ### Documentation
 ```hcl
-# Γ£à DO: Add descriptions
+# DO: Add descriptions
 variable "instance_count" {
  description = "Number of EC2 instances to create"
  type = number
@@ -1442,11 +1442,11 @@ output "instance_ips" {
 
 ### Performance Tips
 ```
-Γ£à Use -target for specific resource updates
-Γ£à Split large configurations into modules
-Γ£à Use -parallelism flag for faster operations
-Γ£à Cache provider plugins locally
-Γ£à Use terraform plan -out for faster apply
+[OK] Use -target for specific resource updates
+[OK] Split large configurations into modules
+[OK] Use -parallelism flag for faster operations
+[OK] Cache provider plugins locally
+[OK] Use terraform plan -out for faster apply
 ```
 
 ---
@@ -1883,23 +1883,23 @@ resource "aws_instance" "web" {
 
 ---
 
-## ≡ƒÄ» INTERVIEW QUICK TIPS
+## INTERVIEW QUICK TIPS
 
 ### Most Asked Questions:
 1. **"How do you manage state in a team?"**
- ΓåÆ Remote backend (S3) with `use_lockfile = true`
+ → Remote backend (S3) with `use_lockfile = true`
 
 2. **"How do you handle multiple environments?"**
- ΓåÆ Workspaces + separate tfvars files
+ → Workspaces + separate tfvars files
 
 3. **"What's the difference between count and for_each?"**
- ΓåÆ Count = simple lists, for_each = named resources (preserves state)
+ → Count = simple lists, for_each = named resources (preserves state)
 
 4. **"How do you recreate a corrupted resource?"**
- ΓåÆ `terraform apply -replace="resource_name"` (not taint - deprecated!)
+ → `terraform apply -replace="resource_name"` (not taint - deprecated!)
 
 5. **"How do you import existing infrastructure?"**
- ΓåÆ `terraform import` + `terraform state show` + copy to .tf file
+ → `terraform import` + `terraform state show` + copy to .tf file
 
 ### Key Commands to Remember:
 ```bash
@@ -1911,11 +1911,9 @@ terraform workspace new prod # Create environment
 
 ### Red Flags to Avoid:
 ```
-Γ¥î Committing .tfstate to git
-Γ¥î Hardcoding credentials
-Γ¥î Not using remote backend for teams
-Γ¥î Using deprecated "taint" command
-Γ¥î Not pinning provider versions
+[AVOID] Committing .tfstate to git
+[AVOID] Hardcoding credentials
+[AVOID] Not using remote backend for teams
+[AVOID] Using deprecated "taint" command
+[AVOID] Not pinning provider versions
 ```
-
-**Good luck with your interview! ≡ƒÜÇ**
