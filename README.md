@@ -1,12 +1,12 @@
 # Enterprise AWS Infrastructure-as-Code Framework
 
-An enterprise-grade, modular AWS infrastructure framework provisioned with Terraform and OpenTofu. Designed around zero-trust network boundaries, CIS AWS Foundations Benchmark hardening, automated native S3 state locking, and multi-environment orchestration.
+An enterprise-grade, modular AWS infrastructure framework provisioned with Terraform and OpenTofu. Designed around zero-trust network boundaries, CIS AWS Foundations Benchmark hardening, automated NAT egress patterns, and resilient workload segmentation across multi-Availability Zone networks.
 
 ---
 
 ## Architectural Overview
 
-The framework deploys a resilient, multi-tier cloud topology across multiple Availability Zones. Incoming internet traffic terminates at an Application Load Balancer in public subnets, which forwards requests exclusively to hardened compute instances situated in isolated private subnets. Outbound egress for package updates and API integrations is managed via dedicated NAT Gateways.
+The framework deploys a resilient, multi-tier cloud topology across multiple Availability Zones. Incoming internet traffic terminates at an Application Load Balancer in public subnets, which forwards requests to hardened compute instances situated in isolated private subnets. Outbound egress for package updates and API integrations is managed via dedicated NAT Gateways.
 
 ```mermaid
 flowchart TD
@@ -34,7 +34,7 @@ flowchart TD
 
         subgraph StateManagement ["Modern S3 State Backend (Terraform 1.10+)"]
             S3["S3 State Bucket (Versioning + TLS 1.2+ Enforced)"]
-            S3Lock["Native S3 State Locking (use_lockfile = true via If-None-Match)"]
+            S3Lock["Native S3 State Locking (use_lockfile = true)"]
         end
     end
 
@@ -55,11 +55,11 @@ flowchart TD
 
 ## Key Enterprise Engineering Highlights
 
-- Zero Static Credentials: SSH port 22 is closed across all security groups. Instance administrative access is provided exclusively via AWS Systems Manager (SSM) Session Manager using short-lived IAM credentials.
-- CIS Benchmark Hardening: Instances enforce mandatory IMDSv2 (`http_tokens = "required"`, hop limit 1) to eliminate SSRF-based metadata and credential theft. All EBS root volumes are encrypted at rest with `gp3`.
+- Zero Static Credentials: SSH port 22 is closed across all security groups. Instance administrative access is provided exclusively via AWS Systems Manager (SSM) Session Manager using short-lived IAM credentials and secure session brokerage.
+- CIS Benchmark Hardening: Instances enforce mandatory IMDSv2 (`http_tokens = "required"`, hop limit 1) to eliminate SSRF-based metadata and credential theft. All EBS root volumes are encrypted at rest with `gp3` storage and customer-managed naming standards.
 - Decoupled Security Group Rules: Avoids inline `ingress` and `egress` blocks to prevent state drift, rule flapping, and cyclical dependency errors when cross-referencing security groups.
 - Deterministic Resource Addressing: All subnets, route tables, and compute nodes are indexed via `for_each` maps rather than `count` arrays, preventing index shift re-creations during resource updates.
-- Native S3 Concurrency Control: Leverages modern Terraform 1.10+ native S3 state locking (`use_lockfile = true`) powered by S3 conditional writes (`If-None-Match: *`). Eliminates the complexity, cost, and IAM overhead of external DynamoDB tables.
+- Native S3 Concurrency Control: Leverages modern Terraform 1.10+ native S3 state locking (`use_lockfile = true`) powered by S3 conditional writes (`If-None-Match: *`). Eliminates the complexity, cost, and operational burden of DynamoDB-based locking.
 - Zero-Cost Local Emulation: Fully compatible with [MiniStack](https://ministack.org/) and LocalStack for offline integration testing without incurring AWS billing.
 
 ---
@@ -143,9 +143,9 @@ Provisions an Application Load Balancer spanning public subnets:
 
 ## Remote State Management & Modern S3 Native Locking
 
-Historically, Terraform required an external DynamoDB table to achieve distributed state locking. With Terraform 1.10+, Amazon S3 natively supports conditional writes (`PutObject` with `If-None-Match`), allowing locks to be created and released directly inside the S3 state bucket.
+Historically, Terraform required an external DynamoDB table to achieve distributed state locking. With Terraform 1.10+, Amazon S3 natively supports conditional writes (`PutObject` with `If-None-Match`) that enable reliable state locking without extra infrastructure.
 
-```
+```text
 Developer A: terraform apply                     Developer B: terraform apply
              |                                                |
              v                                                v
@@ -266,5 +266,5 @@ Every commit and pull request triggers `.github/workflows/terraform-ci.yml`, whi
 
 ## Historical Learning Archive & Quick Revision Notes
 
-- Historical Labs: The initial hands-on labs and progressive exercises (Day 1 through Day 9) covering basic syntax, data sources, provider aliasing, and prototype modules are preserved in [`legacy-archive/`](legacy-archive/README.md).
+- Historical Labs: The initial hands-on labs and progressive exercises (Day 1 through Day 9) covering basic syntax, data sources, provider aliasing, and prototype modules are preserved in [`legacy-archive/README.md`](legacy-archive/README.md).
 - Quick Revision Notes: Comprehensive revision notes covering core syntax, CLI commands, interpolation, lifecycle rules, and state management are available in [`legacy-archive/quick-revision-notes.md`](legacy-archive/quick-revision-notes.md).
