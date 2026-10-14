@@ -2,7 +2,7 @@ variable "servers" {
   type = map(string)
   default = {
     web   = "Web Server Config"
-    db    = "Database Server Config"  
+    db    = "Database Server Config"
     cache = "Cache Server Config"
   }
 }

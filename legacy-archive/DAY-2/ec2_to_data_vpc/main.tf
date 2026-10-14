@@ -64,10 +64,10 @@ data "aws_subnet" "public" {
 # }
 
 resource "aws_instance" "public_ec2" {
-  ami                         = var.ami_id
-  instance_type               = var.instance_type
-  key_name                    = var.key_name
-  subnet_id                   = data.aws_subnet.public.id
+  ami           = var.ami_id
+  instance_type = var.instance_type
+  key_name      = var.key_name
+  subnet_id     = data.aws_subnet.public.id
   #vpc_security_group_ids      = [data.aws_security_group.existing.id]
   vpc_security_group_ids      = ["sg-05641685084f62b40"]
   associate_public_ip_address = true

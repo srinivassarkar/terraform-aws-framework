@@ -44,7 +44,7 @@ module "vpc" {
   igw_parameters = {
     igw-main = {
       vpc_name = "main-vpc"
-      tags        = { Gateway = "internet" }
+      tags     = { Gateway = "internet" }
     }
   }
 
