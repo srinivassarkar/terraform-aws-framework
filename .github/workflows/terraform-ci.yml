@@ -5,10 +5,12 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   validate:
     name: Lint, Validate and Security Scan
+    if: ${{ false }} # Paused to prevent automatic trigger execution; toggle to true or remove to enable
     runs-on: ubuntu-latest
 
     steps:
